@@ -34,7 +34,7 @@ def read_slice(filename, slice_dim):
     # raw 16 bit little endian integers.
     with open(filename, 'rb') as f:
         gzipfile = gzip.GzipFile(fileobj=f)
-        return np.fromstring(gzipfile.read(), np.int16).reshape(slice_dim)
+        return np.frombuffer(gzipfile.read(), np.int16).reshape(slice_dim)
 
 
 __cached_data__ = None
