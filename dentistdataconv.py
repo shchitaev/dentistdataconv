@@ -21,11 +21,7 @@ import numpy as np
 import gzip
 from xml.dom.minidom import parseString
 from optparse import OptionParser
-
-try:
-    from nifti import NiftiImage
-except Exception as e:
-    print("Warning: pynifti not found, .nii output not supported.")
+import nibabel as nib
 
 
 def read_slice(filename, slice_dim):
@@ -98,10 +94,11 @@ def write_raw_file(settings, basename):
 
 def write_nifti_file(settings, basename):
     """Write data <basename>.nii."""
-    nim = NiftiImage(get_data(settings))
+    print(type(get_data(settings)))
+    nifti_image = nib.Nifti1Image(get_data(settings), affine=np.eye(4))
     filename = basename + '.nii'
     print('Writing data to the nifti file ' + filename + '.')
-    nim.save(filename)
+    nib.save(nifti_image, filename)
 
 
 def get_settings(input_path):
