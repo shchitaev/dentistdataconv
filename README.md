@@ -1,22 +1,30 @@
-dentistdataconv
+dentistdataconv (Python3)
 ===============
+This is a fork of the original https://github.com/mhe/dentistdataconv
+Change: Python3, fix code, new dependencies, add requirements.txt
+
 
 dentistdataconv.py is a simple Python script that converts volumetric dentist
 data to better documented volume formats: [nrrd][1], [MetaImage (mhd)][2], and
 [nifti (nii)][3].
 
-[1]: http://teem.sourceforge.net/nrrd/
-[2]: http://www.itk.org/Wiki/MetaIO
-[3]: http://nifti.nimh.nih.gov/nifti-1/
+[1]: https://teem.sourceforge.net/nrrd/
+[2]: https://www.itk.org/Wiki/MetaIO
+[3]: https://nifti.nimh.nih.gov/nifti-1/
+
+Installation with requirements.txt 
+------------
+
+	pip3 install -r requirements.txt 
 
 Dependencies
 ------------
 
 Besides Python, the script's only dependency is [numpy][4]. For nifti (.nii)
-output one also needs [pynifti][5].
+output one also needs [nibabel][5].
 
-[4]: http://numpy.scipy.org/
-[5]: http://niftilib.sourceforge.net/pynifti/
+[4]: https://numpy.scipy.org/
+[5]: https://nipy.org/nibabel/gettingstarted.html
 
 Usage
 -----
