@@ -48,7 +48,7 @@ def get_data(settings):
         # This step of combining all the slices to one numpy array is not very
         # memory efficient, but for now it is good enough.
         print("Combining the slices into a single volume.")
-        __cached_data__ = np.array(slices)
+        __cached_data__ = np.array(slices).reshape(int(settings['VolSizeX']), int(settings['VolSizeY']), int(settings['VolSizeZ']))
     return __cached_data__
 
 
