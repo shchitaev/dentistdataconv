@@ -1,12 +1,12 @@
 dentistdataconv (Python3)
 ===============
 This is a fork of the original https://github.com/mhe/dentistdataconv
-Change: Python3, fix code, new dependencies, add requirements.txt
+Change: Python3, fix code, add dicom writing, new packages, add requirements.txt
 
 
 dentistdataconv.py is a simple Python script that converts volumetric dentist
 data to better documented volume formats: [nrrd][1], [MetaImage (mhd)][2], and
-[nifti (nii)][3], dicom.
+[nifti (nii)][3], dicom (testing).
 
 [1]: https://teem.sourceforge.net/nrrd/
 [2]: https://www.itk.org/Wiki/MetaIO
@@ -16,10 +16,6 @@ Installation with requirements.txt
 ------------
 
 	pip3 install -r requirements.txt 
-
-
-[4]: https://numpy.scipy.org/
-[5]: https://nipy.org/nibabel/gettingstarted.html
 
 Usage
 -----
@@ -34,7 +30,7 @@ The -h options shows how to use it:
       -m, --metaimage  write metaimage header (mhd)
       -i, --nifti      write nifti file (nii)
       -r, --raw        write raw data to file (used by header files)
-	  -d, --dicom      write dicom data to file (used by header files
+	  -d, --dicom      write dicom data to file (used by header files)
 
 For example, the following command, 
 
