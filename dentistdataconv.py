@@ -22,7 +22,7 @@ import gzip
 from xml.dom.minidom import parseString
 from optparse import OptionParser
 import nibabel as nib
-
+import pydicom
 
 def read_slice(filename, slice_dim):
     """Read slice of data from file, return numpy array with data"""
@@ -48,7 +48,7 @@ def get_data(settings):
         # This step of combining all the slices to one numpy array is not very
         # memory efficient, but for now it is good enough.
         print("Combining the slices into a single volume.")
-        __cached_data__ = np.array(slices)
+        __cached_data__ = np.array(slices).reshape(int(settings['VolSizeX']), int(settings['VolSizeY']), int(settings['VolSizeZ']))
     return __cached_data__
 
 
@@ -91,7 +91,24 @@ def write_raw_file(settings, basename):
     print('Writing raw data to ' + filename + '.')
     volume_data.tofile(filename)
 
+def wrire_dicom_file(settings, basename):
+    """Write dicom data to <basename>.dcm."""
+    image = get_data(settings)
+    ds = pydicom.Dataset()
 
+    ds.Rows = image.shape[0]
+    ds.Columns = image.shape[1]
+    ds.NumberOfFrames = image.shape[2]
+    ds.PixelData = image.tobytes()
+    ds.is_little_endian = True
+    ds.is_implicit_VR = False
+    ds.BitsStored = 16
+    ds.BitsAllocated = 16
+    ds.ImageType = r"ORIGINAL\PRIMARY\AXIAL"
+
+    filename = basename + '.dcm'
+    print('Writing raw data to ' + filename + '.')
+    ds.save_as(filename)
 def write_nifti_file(settings, basename):
     """Write data <basename>.nii."""
     print(type(get_data(settings)))
@@ -99,7 +116,6 @@ def write_nifti_file(settings, basename):
     filename = basename + '.nii'
     print('Writing data to the nifti file ' + filename + '.')
     nib.save(nifti_image, filename)
-
 
 def get_settings(input_path):
     """Read settings from xml file."""
@@ -136,6 +152,8 @@ def main():
                       const='nii', help='write nifti file (nii)')
     parser.add_option('-r', '--raw', dest='outputtypes', action='append_const',
                       const='raw', help='write raw data to file (used by header files)')
+    parser.add_option('-d', '--dicom', dest='outputtypes', action='append_const',
+                      const='dcm', help='write dicom data to file (used by header files)')
 
     (options, args) = parser.parse_args()
     if options.outputtypes is None:
@@ -152,7 +170,8 @@ def main():
     output_mapping = {'nhdr': write_nrrd_header,
                       'mhd': write_metaimage_header,
                       'nii': write_nifti_file,
-                      'raw': write_raw_file
+                      'raw': write_raw_file,
+                      'dcm': wrire_dicom_file
                       }
     for outputtype in options.outputtypes:
         output_mapping[outputtype](settings, outputbasename)
