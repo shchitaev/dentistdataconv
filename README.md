@@ -17,6 +17,11 @@ Installation with requirements.txt
 
 	pip3 install -r requirements.txt 
 
+Dicom
+-----
+
+Dicom writing is tested 
+
 Usage
 -----
 
