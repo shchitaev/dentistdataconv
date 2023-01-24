@@ -6,7 +6,7 @@ Change: Python3, fix code, add dicom writing, new packages, add requirements.txt
 
 dentistdataconv.py is a simple Python script that converts volumetric dentist
 data to better documented volume formats: [nrrd][1], [MetaImage (mhd)][2], and
-[nifti (nii)][3], dicom (testing).
+[nifti (nii)][3], dicom (dcm).
 
 [1]: https://teem.sourceforge.net/nrrd/
 [2]: https://www.itk.org/Wiki/MetaIO
@@ -35,11 +35,6 @@ The -h options shows how to use it:
 For example, the following command, 
 
     ./dentistdataconv.py -n -m -r /path/to/datadirectory myvolume
-
-will produce three files:
-    myvolume.nrrd
-	myvolume.mhd
-	myvolume.raw
 
 License
 -------
