@@ -93,22 +93,39 @@ def write_raw_file(settings, basename):
 
 def wrire_dicom_file(settings, basename):
     """Write dicom data to <basename>.dcm."""
-    image = get_data(settings)
-    ds = pydicom.Dataset()
 
-    ds.Rows = image.shape[0]
-    ds.Columns = image.shape[1]
-    ds.NumberOfFrames = image.shape[2]
-    ds.PixelData = image.tobytes()
-    ds.is_little_endian = True
-    ds.is_implicit_VR = False
-    ds.BitsStored = 16
-    ds.BitsAllocated = 16
-    ds.ImageType = r"ORIGINAL\PRIMARY\AXIAL"
+    pixel_array = get_data(settings)
 
+    # Создаем датасет с метаданными
+    file_meta = pydicom.dataset.FileMetaDataset()
+    file_meta.MediaStorageSOPClassUID = '1.2.840.10008.5.1.4.1.1.2'
+    file_meta.MediaStorageSOPInstanceUID = '1.2.826.0.1.3680043.2.1125.1.75064541463040.2005072610432348942'
+    file_meta.TransferSyntaxUID = pydicom.uid.ImplicitVRLittleEndian
+
+    # Создаем датасет с данными изображения
+    ds = pydicom.dataset.Dataset()
+    ds.StudyDate = settings['TimeStamp'][:-4]
+    ds.SeriesInstanceUID = pydicom.uid.generate_uid()
+    ds.StudyInstanceUID = pydicom.uid.generate_uid()
+    ds.SOPInstanceUID = '1.2.826.0.1.3680043.2.1125.1.75064541463040.2005072610432348942'
+    ds.PhotometricInterpretation = 'MONOCHROME2'
+    ds.Rows, ds.Columns, ds.NumberOfFrames = pixel_array.shape
+    ds.BitsAllocated = ds.BitsStored = 16
+
+    ds.SamplesPerPixel = 1
+    ds.PixelRepresentation = 0
+
+    ds.PixelData = pixel_array.tobytes()
+
+    # Сохраняем DICOM-файл
     filename = basename + '.dcm'
     print('Writing raw data to ' + filename + '.')
-    ds.save_as(filename)
+    ds.file_meta = file_meta
+    ds.is_little_endian = True
+    ds.is_implicit_VR = False
+    pydicom.filewriter.dcmwrite(filename, ds, write_like_original=False)
+
+                                                       
 def write_nifti_file(settings, basename):
     """Write data <basename>.nii."""
     print(type(get_data(settings)))
